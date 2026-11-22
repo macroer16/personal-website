@@ -1,33 +1,95 @@
 @import "tailwindcss";
 
-/* Theme tokens: one accent colour used across the site (Tailwind v4 @theme). */
-@theme {
-  --color-accent: #8b7bff;
+/* Light/dark theme tokens. Dark is the default; the toggle adds .light to <html>. */
+:root {
+  --bg: #0a0a0a;
+  --fg: #fafafa;
+  --muted: #a1a1aa;
+  --faint: #71717a;
+  --card: #111111;
+  --card-hover: #161616;
+  --border: #232326;
+  --pill: #1b1b1e;
+  --dot: rgba(255, 255, 255, 0.07);
+}
+.light {
+  --bg: #fafaf9;
+  --fg: #0a0a0a;
+  --muted: #52525b;
+  --faint: #71717a;
+  --card: #ffffff;
+  --card-hover: #f4f4f5;
+  --border: #e4e4e7;
+  --pill: #f4f4f5;
+  --dot: rgba(0, 0, 0, 0.08);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-card: var(--card);
+  --color-card-hover: var(--card-hover);
+  --color-line: var(--border);
+  --color-pill: var(--pill);
+  --color-accent: #6d8bff;
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
 html {
-  background: #0a0a0a;
+  background: var(--bg);
   color-scheme: dark;
 }
+html.light {
+  color-scheme: light;
+}
 
+/* Dotted grid background, like graph paper. */
 body {
-  background:
-    radial-gradient(1200px 600px at 50% -200px, rgba(139, 123, 255, 0.08), transparent 70%),
-    #0a0a0a;
-  color: #e5e5e5;
+  background-color: var(--bg);
+  background-image: radial-gradient(var(--dot) 1px, transparent 1px);
+  background-size: 22px 22px;
+  background-attachment: fixed;
+  color: var(--fg);
   font-family: var(--font-sans);
 }
 
 ::selection {
-  background: rgba(139, 123, 255, 0.35);
-  color: #fff;
+  background: rgba(109, 139, 255, 0.35);
 }
 
 a:focus-visible,
-button:focus-visible {
+button:focus-visible,
+summary:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
-  border-radius: 6px;
+  border-radius: 8px;
+}
+
+/* Fade-up when a section scrolls into view (see Reveal.tsx). */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.in {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Hide the default marker on expandable experience rows. */
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
 }

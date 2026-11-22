@@ -6,10 +6,10 @@ import { useEffect, useState } from "react";
 const MS_PER_YEAR = 365.2425 * 24 * 60 * 60 * 1000;
 
 export default function AgeCounter({ birthDate }: { birthDate: string }) {
-  const [age, setAge] = useState<string | null>(null);
+  const start = new Date(birthDate).getTime();
+  const [age, setAge] = useState(() => ((Date.now() - start) / MS_PER_YEAR).toFixed(9));
 
   useEffect(() => {
-    const start = new Date(birthDate).getTime();
     let frame = 0;
     const tick = () => {
       setAge(((Date.now() - start) / MS_PER_YEAR).toFixed(9));
@@ -17,12 +17,7 @@ export default function AgeCounter({ birthDate }: { birthDate: string }) {
     };
     tick();
     return () => cancelAnimationFrame(frame);
-  }, [birthDate]);
+  }, [start]);
 
-  // Render nothing on the server to avoid a hydration mismatch.
-  return (
-    <span className="font-mono tabular-nums text-accent" aria-label="Age in years">
-      {age ?? "18.000000000"}
-    </span>
-  );
+  return <span className="tabular-nums" suppressHydrationWarning>{age}</span>;
 }

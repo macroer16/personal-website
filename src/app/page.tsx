@@ -1,94 +1,110 @@
 import Link from "next/link";
-import Nav from "@/components/Nav";
+import Image from "next/image";
+import { ArrowRight, FileText, Mail, Star } from "lucide-react";
+import { siGithub } from "simple-icons";
+import TopBar from "@/components/TopBar";
 import Section from "@/components/Section";
+import Reveal from "@/components/Reveal";
 import AgeCounter from "@/components/AgeCounter";
 import ProjectCard from "@/components/ProjectCard";
-import GitHubSection from "@/components/GitHubSection";
-import { site, certifications, stack, experience, achievements } from "@/data/site";
+import RoleRow from "@/components/RoleRow";
+import Heatmap from "@/components/Heatmap";
+import Icon, { LinkedInIcon } from "@/components/Icon";
+import { site, stack, certifications, experience, education, achievements } from "@/data/site";
 import { projects } from "@/data/projects";
+import { getContributions, getProfile } from "@/lib/github";
 
-export const revalidate = 3600; // rebuild the GitHub section at most once an hour
+export const revalidate = 3600; // refresh the GitHub data at most once an hour
 
-export default function Home() {
+const GitHubIcon = ({ className = "h-4 w-4" }) => (
+  <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden><path d={siGithub.path} /></svg>
+);
+
+function Avatar({ size }: { size: number }) {
+  return site.photo ? (
+    <Image src={site.photo} alt={site.name} width={size} height={size} className="h-full w-full rounded-full object-cover" priority />
+  ) : (
+    // Monogram until a photo is added in src/data/site.ts.
+    <div className="grid h-full w-full place-items-center rounded-full bg-gradient-to-br from-zinc-600 to-zinc-900 font-semibold tracking-tight text-white" style={{ fontSize: size * 0.3 }}>VB</div>
+  );
+}
+
+export default async function Home() {
+  const [profile, contributions] = await Promise.all([getProfile(site.githubUser), getContributions(site.githubUser)]);
   const featured = projects.filter((p) => p.featured);
 
   return (
-    <>
-      <Nav />
-      <main className="mx-auto max-w-5xl px-5">
+    <div id="top">
+      <TopBar />
+      <main className="mx-auto max-w-[850px] px-5 pb-40">
         {/* Hero */}
-        <section className="relative pb-16 pt-20 sm:pt-28">
-          <div aria-hidden className="pointer-events-none absolute -top-10 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-accent/20 blur-3xl" />
-          <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-3 py-1 text-xs text-emerald-300">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-            {site.openTo}
-          </span>
-          <h1 className="mt-6 text-4xl font-bold tracking-tight text-white sm:text-6xl">
-            Hi, I&apos;m {site.name.split(" ")[0]}.
-          </h1>
-          <p className="mt-3 text-xl text-neutral-300 sm:text-2xl">{site.role}</p>
-          <p className="mt-6 max-w-2xl leading-relaxed text-neutral-400">{site.intro}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            {site.cvReady ? (
-              <a href={site.cv} className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-black transition hover:opacity-90">
-                Download CV
+        <section className="grid items-center gap-8 pt-12 sm:pt-24 md:grid-cols-[1fr_auto] md:gap-10">
+          <Reveal>
+            <h1 className="text-5xl font-bold tracking-tight text-fg sm:text-6xl">hi, i&apos;m {site.first}</h1>
+            <p className="mt-3 text-[15px] font-semibold text-fg">
+              <AgeCounter birthDate={site.birthDate} /> years old · {site.tagline}
+            </p>
+            <div className="mt-6 max-w-[460px] space-y-4 text-[15px] leading-relaxed text-muted">
+              {site.intro.map((line) => <p key={line}>{line}</p>)}
+            </div>
+            <div className="mt-7 flex flex-wrap items-center gap-2">
+              {[
+                { href: site.github, label: "GitHub", icon: <GitHubIcon /> },
+                { href: site.linkedin, label: "LinkedIn", icon: <LinkedInIcon /> },
+                { href: `mailto:${site.email}`, label: "Email", icon: <Mail className="h-4 w-4" /> },
+              ].map((s) => (
+                <a key={s.label} href={s.href} target="_blank" rel="noreferrer" aria-label={s.label}
+                  className="grid h-10 w-10 place-items-center rounded-full border border-line text-muted transition hover:border-faint hover:text-fg">
+                  {s.icon}
+                </a>
+              ))}
+              <a href={site.cvReady ? site.cv : `mailto:${site.email}?subject=CV%20request`}
+                className="ml-1 inline-flex h-10 items-center gap-2 rounded-full bg-fg px-4 text-sm font-medium text-bg transition hover:opacity-85">
+                <FileText className="h-4 w-4" /> {site.cvReady ? "Download CV" : "Request CV"}
               </a>
-            ) : (
-              <a href={`mailto:${site.email}?subject=CV%20request`} className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-black transition hover:opacity-90">
-                Request my CV
-              </a>
-            )}
-            <a href={site.github} target="_blank" rel="noreferrer" className="rounded-full border border-white/15 px-5 py-2.5 text-sm text-white transition hover:border-accent">
-              GitHub
-            </a>
-            <a href={site.linkedin} target="_blank" rel="noreferrer" className="rounded-full border border-white/15 px-5 py-2.5 text-sm text-white transition hover:border-accent">
-              LinkedIn
-            </a>
-            <a href={`mailto:${site.email}`} className="rounded-full border border-white/15 px-5 py-2.5 text-sm text-white transition hover:border-accent">
-              Email
-            </a>
-          </div>
+            </div>
+          </Reveal>
+
+          <Reveal className="order-first flex items-center gap-4 md:order-none md:flex-col md:gap-3">
+            <div className="h-24 w-24 shrink-0 rounded-full border border-line p-1 md:h-44 md:w-44 md:p-1.5">
+              <Avatar size={176} />
+            </div>
+            <div className="flex flex-col items-start gap-2 md:items-center">
+              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+                </span>
+                Open to work
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#ff9900]/30 bg-[#ff9900]/10 px-3 py-1 text-xs font-medium text-[#ffb347]">
+                AWS Certified · SAA
+              </span>
+            </div>
+          </Reveal>
         </section>
 
-        <Section id="about" eyebrow="About" title="A bit about me">
-          <div className="grid gap-8 md:grid-cols-[2fr_1fr]">
-            <p className="leading-relaxed text-neutral-400">{site.about}</p>
-            <div className="rounded-2xl border border-white/10 p-5 text-sm">
-              <p className="text-neutral-500">Age</p>
-              <p className="mt-1 text-lg"><AgeCounter birthDate={site.birthDate} /></p>
-              <p className="mt-4 text-neutral-500">Based in</p>
-              <p className="mt-1 text-white">{site.location}</p>
-              <p className="mt-4 text-neutral-500">Studying</p>
-              <p className="mt-1 text-white">BSc Computer Science, Westminster</p>
+        {/* Status strip */}
+        <Reveal className="mt-12 grid gap-3 sm:grid-cols-3">
+          {site.status.map((s) => (
+            <div key={s.label} className="rounded-xl border border-line bg-card/60 px-4 py-3">
+              <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-faint">{s.label}</p>
+              <p className="mt-1 text-sm text-fg">{s.value}</p>
             </div>
-          </div>
-        </Section>
+          ))}
+        </Reveal>
 
-        <Section id="certifications" eyebrow="Certifications" title="Certified on AWS">
-          <div className="grid gap-4 sm:grid-cols-2">
-            {certifications.map((c) => (
-              <div key={c.name} className="flex gap-4 rounded-2xl border border-white/10 bg-gradient-to-br from-[#ff9900]/10 to-transparent p-5">
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#ff9900]/15 font-mono text-xs font-bold text-[#ff9900]">
-                  AWS
-                </div>
-                <div>
-                  <h3 className="font-semibold text-white">{c.name}</h3>
-                  <p className="mt-1 text-sm text-neutral-400">{c.detail}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Section>
-
-        <Section id="stack" eyebrow="Stack" title="What I work with">
-          <div className="grid gap-4 sm:grid-cols-2">
+        <Section id="stack" eyebrow="Stack" title="What I Work With">
+          <div className="grid gap-3 md:grid-cols-2">
             {stack.map((g) => (
-              <div key={g.area} className="rounded-2xl border border-white/10 p-5">
-                <h3 className="font-semibold text-white">{g.area}</h3>
-                <p className="text-sm text-neutral-500">{g.detail}</p>
+              <div key={g.area} className="rounded-xl border border-line bg-card/60 p-4">
+                <h3 className="font-semibold text-fg">{g.area}</h3>
+                <p className="mt-0.5 text-sm text-muted">{g.detail}</p>
                 <ul className="mt-4 flex flex-wrap gap-2">
                   {g.items.map((i) => (
-                    <li key={i} className="rounded-md bg-white/5 px-2.5 py-1 font-mono text-xs text-neutral-300">{i}</li>
+                    <li key={i.name} className="inline-flex items-center gap-1.5 rounded-md border border-line bg-pill px-2.5 py-1.5 text-[13px] font-medium text-fg">
+                      <Icon name={i.icon} /> {i.name}
+                    </li>
                   ))}
                 </ul>
               </div>
@@ -96,69 +112,127 @@ export default function Home() {
           </div>
         </Section>
 
-        <Section id="projects" eyebrow="Projects" title="Things I've built">
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.map((p) => <ProjectCard key={p.title} project={p} />)}
-          </div>
-          <Link href="/projects" className="mt-8 inline-block text-sm text-accent hover:underline">
-            View all projects →
-          </Link>
-        </Section>
-
-        <Section id="experience" eyebrow="Experience" title="Work & education">
-          <ol className="relative border-l border-white/10">
-            {experience.map((e) => (
-              <li key={e.title} className="mb-10 ml-6">
-                <span className="absolute -left-[5px] mt-2 h-2.5 w-2.5 rounded-full bg-accent" />
-                <p className="font-mono text-xs text-neutral-500">{e.dates}</p>
-                <h3 className="mt-1 font-semibold text-white">{e.title}</h3>
-                <p className="text-sm text-neutral-400">{e.org}</p>
-                {e.points.length > 0 && (
-                  <ul className="mt-3 list-disc space-y-1 pl-4 text-sm text-neutral-400">
-                    {e.points.map((pt) => <li key={pt}>{pt}</li>)}
-                  </ul>
-                )}
-              </li>
-            ))}
-          </ol>
-        </Section>
-
-        <Section id="achievements" eyebrow="Achievements" title="Milestones">
-          <div className="grid gap-4 sm:grid-cols-3">
-            {achievements.map((a) => (
-              <div key={a.title} className="rounded-2xl border border-white/10 p-5">
-                <h3 className="font-semibold text-white">{a.title}</h3>
-                <p className="mt-2 text-sm text-neutral-400">{a.detail}</p>
+        <Section id="certifications" eyebrow="Credentials" title="Certifications">
+          <div className="grid gap-3 md:grid-cols-2">
+            {certifications.map((c) => (
+              <div key={c.code} className="flex gap-4 rounded-xl border border-line bg-card/60 p-4">
+                <div className="grid h-14 w-14 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-[#232f3e] to-[#131a22] ring-1 ring-[#ff9900]/30">
+                  <span className="text-[11px] font-bold tracking-wide text-[#ff9900]">AWS</span>
+                </div>
+                <div>
+                  <p className="text-xs text-faint">AWS Certified · {c.code}</p>
+                  <h3 className="font-semibold text-fg">{c.name}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-muted">{c.detail}</p>
+                </div>
               </div>
             ))}
           </div>
         </Section>
 
-        <Section id="github" eyebrow="Open source" title="On GitHub">
-          <GitHubSection />
+        <Section id="projects" eyebrow="Builds" title="Featured Projects">
+          <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+            {featured.map((p) => <ProjectCard key={p.title} project={p} />)}
+          </div>
+          <Link href="/projects" className="mt-6 inline-flex items-center gap-2 rounded-lg border border-line px-4 py-2 text-sm font-medium uppercase tracking-wider text-fg transition hover:bg-pill">
+            View all projects <ArrowRight className="h-4 w-4" />
+          </Link>
         </Section>
 
-        <Section id="contact" eyebrow="Contact" title="Say hello">
-          <p className="max-w-xl text-neutral-400">
-            I&apos;m looking for spring weeks, insight programmes and internships in software engineering and cloud.
-            The quickest way to reach me is email.
-          </p>
-          <a href={`mailto:${site.email}`} className="mt-6 inline-block text-xl font-semibold text-white underline decoration-accent underline-offset-8 hover:text-accent sm:text-2xl">
-            {site.email}
+        <Section id="experience" eyebrow="Experience" title="Work">
+          <div className="divide-y divide-line">
+            {experience.map((r) => <RoleRow key={r.org} r={r} />)}
+          </div>
+          <h3 className="mt-10 text-lg font-semibold text-fg">Education</h3>
+          <div className="mt-2 divide-y divide-line">
+            {education.map((r) => <RoleRow key={r.org} r={r} />)}
+          </div>
+        </Section>
+
+        <Section id="achievements" eyebrow="Milestones" title="Achievements" intro="Things I'm proud of so far — with plenty more to come.">
+          <div className="grid gap-3 md:grid-cols-2">
+            {achievements.map((a) => (
+              <div key={a.title} className="rounded-xl border border-line bg-card/60 p-4">
+                <h3 className="font-semibold text-fg">{a.title}</h3>
+                <p className="text-sm text-muted">{a.where}</p>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{a.detail}</p>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        <Section id="github" eyebrow="Open source" title="GitHub Contributions">
+          <div className="rounded-xl border border-line bg-card/60 p-5">
+            {contributions ? (
+              <Heatmap days={contributions.days} total={contributions.total} />
+            ) : (
+              // Fallback image if the contributions API is down.
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={`https://ghchart.rshah.org/40c463/${site.githubUser}`} alt="GitHub contributions" className="w-full" loading="lazy" />
+            )}
+          </div>
+          {profile && (
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              {profile.latest.map((r) => (
+                <a key={r.name} href={r.html_url} target="_blank" rel="noreferrer" className="rounded-xl border border-line bg-card/60 p-4 transition hover:border-faint/50">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-sm text-fg">{r.name}</span>
+                    <span className="flex items-center gap-1 text-xs text-faint"><Star className="h-3 w-3" />{r.stargazers_count}</span>
+                  </div>
+                  {r.description && <p className="mt-1 line-clamp-1 text-sm text-muted">{r.description}</p>}
+                  {r.language && <p className="mt-2 text-xs text-faint">{r.language}</p>}
+                </a>
+              ))}
+            </div>
+          )}
+          <a href={site.github} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-2 text-sm text-muted hover:text-fg">
+            <GitHubIcon /> {profile ? `${profile.repos} public repos` : "All repos"} on GitHub <ArrowRight className="h-4 w-4" />
           </a>
         </Section>
+
+        {/* Contact */}
+        <section id="contact" className="scroll-mt-20 pt-24">
+          <Reveal className="rounded-2xl border border-line bg-card/60 px-6 py-14 text-center">
+            <p className="flex items-center justify-center gap-2 text-[11px] font-medium uppercase tracking-[0.22em] text-faint">
+              <span className="h-px w-5 bg-faint/60" />Contact<span className="h-px w-5 bg-faint/60" />
+            </p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-fg">Get in touch</h2>
+            <p className="mx-auto mt-3 max-w-md text-xl text-muted">Want to work with me?</p>
+            <a href={`mailto:${site.email}`} className="mt-7 inline-flex items-center gap-2.5 rounded-full border border-line bg-bg py-1.5 pl-1.5 pr-5 text-sm font-semibold text-fg transition hover:border-faint">
+              <span className="h-7 w-7 overflow-hidden rounded-full"><Avatar size={28} /></span>
+              Say hello
+            </a>
+            <p className="mt-4 text-sm text-faint">{site.email}</p>
+          </Reveal>
+        </section>
       </main>
 
-      <footer className="border-t border-white/5">
-        <div className="mx-auto flex max-w-5xl flex-col gap-3 px-5 py-8 text-sm text-neutral-500 sm:flex-row sm:justify-between">
-          <p>© {new Date().getFullYear()} {site.name}. Built with Next.js, deployed on Vercel.</p>
-          <div className="flex gap-5">
-            <Link href="/projects" className="hover:text-white">Projects</Link>
-            <a href={site.github} target="_blank" rel="noreferrer" className="hover:text-white">GitHub</a>
-            <a href={site.linkedin} target="_blank" rel="noreferrer" className="hover:text-white">LinkedIn</a>
+      <footer className="border-t border-line">
+        <div className="mx-auto grid max-w-[850px] gap-8 px-5 pb-32 pt-10 text-sm sm:grid-cols-3">
+          <div>
+            <p className="font-semibold text-fg">Victor</p>
+            <p className="mt-2 text-muted">CS student & AWS-certified builder</p>
+            <p className="text-muted">University of Westminster, London</p>
           </div>
+          <div>
+            <p className="text-xs font-medium uppercase tracking-[0.2em] text-faint">Links</p>
+            <ul className="mt-3 space-y-1.5 text-muted">
+              <li><Link href="/projects" className="hover:text-fg">Projects</Link></li>
+              <li><a href="#experience" className="hover:text-fg">Experience</a></li>
+              <li><a href="#achievements" className="hover:text-fg">Achievements</a></li>
+              <li><a href="#github" className="hover:text-fg">Activity</a></li>
+            </ul>
+          </div>
+          <div>
+            <p className="text-xs font-medium uppercase tracking-[0.2em] text-faint">Social</p>
+            <ul className="mt-3 space-y-1.5 text-muted">
+              <li><a href={site.github} target="_blank" rel="noreferrer" className="hover:text-fg">GitHub</a></li>
+              <li><a href={site.linkedin} target="_blank" rel="noreferrer" className="hover:text-fg">LinkedIn</a></li>
+              <li><a href={`mailto:${site.email}`} className="hover:text-fg">Email</a></li>
+            </ul>
+          </div>
+          <p className="text-faint sm:col-span-3">© {new Date().getFullYear()} Victor Benson. Built with Next.js.</p>
         </div>
       </footer>
-    </>
+    </div>
   );
 }

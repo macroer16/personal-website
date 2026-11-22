@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Nav from "@/components/Nav";
+import { ArrowLeft } from "lucide-react";
+import TopBar from "@/components/TopBar";
 import ProjectCard from "@/components/ProjectCard";
 import { projects } from "@/data/projects";
 
@@ -12,14 +13,17 @@ export const metadata: Metadata = {
 export default function ProjectsPage() {
   return (
     <>
-      <Nav />
-      <main className="mx-auto max-w-5xl px-5 py-16">
-        <Link href="/" className="text-sm text-neutral-400 hover:text-white">← Back home</Link>
-        <h1 className="mt-6 text-3xl font-bold tracking-tight text-white sm:text-4xl">All projects</h1>
-        <p className="mt-3 max-w-2xl text-neutral-400">
-          Shipped, in progress and coming next. Each one has a README, a live link and the code on GitHub when it&apos;s done.
+      <TopBar />
+      <main className="mx-auto max-w-[850px] px-5 pb-40 pt-16">
+        <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-muted hover:text-fg">
+          <ArrowLeft className="h-4 w-4" /> Back home
+        </Link>
+        <p className="mt-10 flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.22em] text-faint">
+          <span className="h-px w-5 bg-faint/60" />Builds
         </p>
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <h1 className="mt-2 text-4xl font-bold tracking-tight text-fg">All Projects</h1>
+        <p className="mt-2 text-muted">Shipped, in progress, and the first things I ever put online.</p>
+        <div className="mt-8 grid gap-3 sm:grid-cols-2 md:grid-cols-3">
           {projects.map((p) => <ProjectCard key={p.title} project={p} />)}
         </div>
       </main>

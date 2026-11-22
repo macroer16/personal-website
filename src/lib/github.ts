@@ -1,6 +1,5 @@
-// Fetches public data from the GitHub REST API on the server.
-// `revalidate: 3600` means Next.js caches the result and refreshes it at most once an hour,
-// so we stay well inside GitHub's 60 requests/hour limit for unauthenticated calls.
+// Live GitHub data, fetched on the server and cached for an hour (revalidate: 3600)
+// so we stay well inside the free API limits.
 
 export type Repo = {
   name: string;
@@ -8,50 +7,41 @@ export type Repo = {
   description: string | null;
   language: string | null;
   stargazers_count: number;
-  updated_at: string;
   fork: boolean;
 };
 
-export type GitHubStats = {
-  publicRepos: number;
-  followers: number;
-  topLanguages: { name: string; count: number }[];
-  latest: Repo[];
-};
+export type Day = { date: string; count: number; level: 0 | 1 | 2 | 3 | 4 };
 
-export async function getGitHubStats(user: string): Promise<GitHubStats | null> {
+const opts = { headers: { Accept: "application/vnd.github+json" }, next: { revalidate: 3600 } };
+
+export async function getProfile(user: string) {
   try {
-    const headers = { Accept: "application/vnd.github+json" };
-    const [userRes, reposRes] = await Promise.all([
-      fetch(`https://api.github.com/users/${user}`, { headers, next: { revalidate: 3600 } }),
-      fetch(`https://api.github.com/users/${user}/repos?per_page=100&sort=updated`, {
-        headers,
-        next: { revalidate: 3600 },
-      }),
+    const [u, r] = await Promise.all([
+      fetch(`https://api.github.com/users/${user}`, opts),
+      fetch(`https://api.github.com/users/${user}/repos?per_page=100&sort=pushed`, opts),
     ]);
-    if (!userRes.ok || !reposRes.ok) return null;
-
-    const profile = await userRes.json();
-    const repos: Repo[] = (await reposRes.json()).filter((r: Repo) => !r.fork);
-
-    // Count how many repos use each language and keep the top five.
+    if (!u.ok || !r.ok) return null;
+    const profile = await u.json();
+    const repos: Repo[] = (await r.json()).filter((x: Repo) => !x.fork && x.name !== user);
     const counts = new Map<string, number>();
-    for (const r of repos) {
-      if (r.language) counts.set(r.language, (counts.get(r.language) ?? 0) + 1);
-    }
-    const topLanguages = [...counts.entries()]
-      .map(([name, count]) => ({ name, count }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 5);
-
-    return {
-      publicRepos: profile.public_repos ?? repos.length,
-      followers: profile.followers ?? 0,
-      topLanguages,
-      latest: repos.slice(0, 6),
-    };
+    for (const x of repos) if (x.language) counts.set(x.language, (counts.get(x.language) ?? 0) + 1);
+    const languages = [...counts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 4).map(([n]) => n);
+    return { repos: profile.public_repos as number, languages, latest: repos.slice(0, 4) };
   } catch {
-    // Network or API errors: the page shows a friendly fallback instead of breaking.
+    return null;
+  }
+}
+
+// Contribution calendar from the free github-contributions-api (it reads the public GitHub profile).
+export async function getContributions(user: string): Promise<{ total: number; days: Day[] } | null> {
+  try {
+    const res = await fetch(`https://github-contributions-api.jogruber.de/v4/${user}?y=last`, { next: { revalidate: 3600 } });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const days: Day[] = data.contributions ?? [];
+    if (!days.length) return null;
+    return { total: data.total?.lastYear ?? days.reduce((s, d) => s + d.count, 0), days };
+  } catch {
     return null;
   }
 }
