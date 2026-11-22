@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# victor.benson — personal website
 
-## Getting Started
+My personal site: who I am, my AWS certifications, my stack, projects, experience and live GitHub stats.
 
-First, run the development server:
+**Live:** https://victor-benson.vercel.app
+
+## Stack
+
+- [Next.js 15](https://nextjs.org) (App Router) + TypeScript
+- [Tailwind CSS v4](https://tailwindcss.com)
+- [Geist](https://vercel.com/font) font
+- GitHub REST API for live repo stats (fetched on the server, cached for 1 hour)
+- Hosted on [Vercel](https://vercel.com)
+
+## Features
+
+- Dark, single-page layout with a sticky nav and smooth scrolling
+- Live age counter and a subtle custom cursor (turned off on touch screens and for reduced-motion users)
+- Projects driven by one data file (`src/data/projects.ts`) plus a `/projects` page
+- Live GitHub section: repo count, followers, top language, latest repos and a contribution graph
+- Full SEO: title template, description, Open Graph + Twitter cards and a generated social preview image
+
+## Run it locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# open http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Edit the content
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| What | Where |
+| --- | --- |
+| Name, intro, links, stack, experience, achievements | `src/data/site.ts` |
+| Projects | `src/data/projects.ts` |
+| CV | Put the PDF at `public/Victor_Benson_CV.pdf`, then set `cvReady: true` in `src/data/site.ts` |
+| Accent colour | `--color-accent` in `src/app/globals.css` |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deploy
 
-## Learn More
+1. Push to GitHub.
+2. On [vercel.com/new](https://vercel.com/new), import the repo and click **Deploy** (no settings needed).
+3. Every push to `main` redeploys automatically.
 
-To learn more about Next.js, take a look at the following resources:
+## Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+  app/            pages, layout (SEO metadata), OG image, favicon
+  components/     Nav, Section, ProjectCard, GitHubSection, AgeCounter, Cursor
+  data/           site.ts and projects.ts — all the content
+  lib/github.ts   GitHub API helper
+```
