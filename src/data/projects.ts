@@ -43,6 +43,16 @@ export const projects: Project[] = [
     featured: true,
   },
   {
+    title: "Neon Runner",
+    year: "2026",
+    description:
+      "A synthwave endless runner in the browser: dodge blocks, jump bars, grab coins as it speeds up. Three.js with no game engine and no downloaded assets — a fixed-step game loop, a seeded procedural track, input buffering and coyote time, bloom, and sound synthesised with Web Audio. Unit tests plus a Playwright screenshot harness.",
+    stack: "three.js · typescript · vite · web audio · playwright",
+    github: "https://github.com/macroer16/neon-runner",
+    live: "https://neon-runner-vb.vercel.app",
+    image: "/projects/neon-runner.png",
+  },
+  {
     title: "Due: deadline tracker",
     year: "2026",
     description:
