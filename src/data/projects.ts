@@ -43,6 +43,17 @@ export const projects: Project[] = [
     featured: true,
   },
   {
+    title: "StudyBuddy",
+    year: "2026",
+    description:
+      "Upload a lecture PDF and get a summary, 15 flashcards with spaced repetition, 10 exam-style questions, a timed mock exam scored by topic, and a weekly plan that works back from your exam date. It uses Claude when an API key is set and a built-in offline generator when not, so the demo works with no sign-up. Accounts run on Supabase, with row-level security on every table, rate limits and PDF validation on the server.",
+    stack: "next.js · typescript · supabase (rls) · claude api · tailwind · vitest",
+    github: "https://github.com/macroer16/studybuddy",
+    live: "https://studybuddy-vb.vercel.app",
+    image: "/projects/studybuddy.png",
+    featured: true,
+  },
+  {
     title: "Neon Runner",
     year: "2026",
     description:
