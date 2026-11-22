@@ -7,14 +7,15 @@ export function Header() {
   return (
     <header className="border-b border-dashed border-rule">
       <div className="mx-auto flex max-w-[720px] items-baseline justify-between border-x border-dashed border-rule px-6 py-4">
-        <Link href="/" className="font-serif text-2xl leading-none text-ink">
+        <Link href="/plain" className="font-serif text-2xl leading-none text-ink">
           vb<span className="text-red">.</span>
         </Link>
         <nav className="flex items-baseline gap-5 text-sm text-soft">
-          <Link href="/#about" className="hidden hover:text-ink sm:inline">about</Link>
-          <Link href="/#work" className="hover:text-ink">work</Link>
+          <Link href="/plain#about" className="hidden hover:text-ink sm:inline">about</Link>
+          <Link href="/plain#work" className="hover:text-ink">work</Link>
           <Link href="/projects" className="hover:text-ink">projects</Link>
-          <Link href="/#contact" className="hidden hover:text-ink sm:inline">contact</Link>
+          <Link href="/plain#contact" className="hidden hover:text-ink sm:inline">contact</Link>
+          <Link href="/" className="hover:text-ink">victorOS</Link>
           <ThemeToggle />
         </nav>
       </div>
