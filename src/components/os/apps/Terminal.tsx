@@ -23,6 +23,7 @@ const COMMANDS: Record<string, string> = {
   neofetch: "system info, victor edition",
   projects: "list projects",
   "aws s3 ls": "my projects, as s3 buckets",
+  "aws-guard --demo": "run my aws security scanner on a fake account",
   skills: "what I work with",
   certs: "certifications",
   experience: "where I've worked",
@@ -95,6 +96,27 @@ export default function Terminal({ os }: { os: OsApi }) {
         <p key={p.title}><D>2026-11-22 18:00:00</D> s3://victor-{slug(p.title)}{p.live ? <G> (live)</G> : ""}</p>
       ));
     }
+    if (lower.startsWith("aws-guard")) {
+      const rows: [string, string, string, string][] = [
+        ["CRITICAL", "EC2.19", "sg-…(web-debug)", "High-risk port open to the internet: 3306"],
+        ["CRITICAL", "IAM.9", "root account", "Root account has no MFA"],
+        ["CRITICAL", "RDS.2", "orders-db", "Database is publicly accessible"],
+        ["CRITICAL", "S3.8", "acme-public-assets", "Bucket is public through its bucket policy"],
+        ["HIGH", "EC2.13", "sg-…(web-debug)", "SSH (22) is open to the internet"],
+        ["LOW", "cost", "vol-…", "Unattached 200 GB gp2 volume — $20.00/month"],
+      ];
+      const col = (sev: string) => (sev === "CRITICAL" ? "text-[#ff5f57]" : sev === "HIGH" ? "text-[#ffcb6b]" : "text-[#7ab8ff]");
+      return (
+        <div>
+          <D>aws-guard 0.1.0 · scanning demo account (eu-west-2) · read-only</D>
+          {rows.map((r) => (
+            <p key={r[1] + r[2]}><span className={col(r[0])}>{r[0].padEnd(9, " ")}</span><D>{r[1].padEnd(7, " ")}</D> {r[3]} <D>({r[2]})</D></p>
+          ))}
+          <p className="mt-1">…and 15 more. <span className="text-[#ff5f57]">score 0/100</span> · ~$24.80/month waste</p>
+          <p><D>source + full report:</D> <B>github.com/macroer16/aws-guard</B></p>
+        </div>
+      );
+    }
     if (lower === "skills") return toolbox.map((t) => <p key={t.area}><Y>{t.area.padEnd(10, " ")}</Y> {t.items}</p>);
     if (lower === "certs") return certifications.map((c) => <p key={c.code}><G>✓</G> {c.name} <D>({c.code})</D></p>);
     if (lower === "experience" || lower === "work") return work.map((w) => <p key={w.org}><Y>{w.dates}</Y> {w.org} <D>— {w.role}</D></p>);
@@ -156,7 +178,7 @@ export default function Terminal({ os }: { os: OsApi }) {
           className="min-w-0 flex-1 bg-transparent text-white caret-[#5be38a] outline-none" />
       </form>
       <div className="mt-4 flex flex-wrap gap-2">
-        {["neofetch", "aws s3 ls", "skills", "sudo hire victor"].map((s) => (
+        {["neofetch", "aws-guard --demo", "aws s3 ls", "sudo hire victor"].map((s) => (
           <button key={s} onClick={(e) => { e.stopPropagation(); setInput(s); field.current?.focus(); }}
             className="rounded border border-white/15 px-2 py-0.5 text-[11px] text-white/55 hover:border-white/40 hover:text-white">{s}</button>
         ))}

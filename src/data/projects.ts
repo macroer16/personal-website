@@ -13,6 +13,16 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    title: "aws-guard",
+    year: "2026",
+    description:
+      "A read-only scanner that finds security risks and wasted money in an AWS account — public buckets, open SSH, root without MFA, databases without backups, forgotten volumes still billing. 22 checks mapped to AWS Security Hub controls, an HTML report with a score, a CI gate, and a demo mode you can try without AWS. Tested against a mocked AWS account.",
+    stack: "python · boto3 · pytest + moto · github actions",
+    github: "https://github.com/macroer16/aws-guard",
+    image: "/projects/aws-guard.png",
+    featured: true,
+  },
+  {
     title: "CS Visualiser",
     year: "2026",
     description:
@@ -39,7 +49,6 @@ export const projects: Project[] = [
     stack: "next.js · typescript · tailwind · vercel",
     github: "https://github.com/macroer16/personal-website",
     live: "https://victor-benson.vercel.app",
-    featured: true,
   },
   {
     title: "AWS portfolio site",

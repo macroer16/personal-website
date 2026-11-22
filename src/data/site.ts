@@ -78,7 +78,7 @@ export const study: Role[] = [
 
 // A short, dated log of things that happened.
 export const log = [
-  { when: "nov 2026", what: "shipped CS Visualiser and this site" },
+  { when: "nov 2026", what: "shipped aws-guard, CS Visualiser and this site" },
   { when: "sep 2026", what: "started computer science at Westminster" },
   { when: "2026", what: "MirrorVerse passed 30K followers on TikTok" },
   { when: "summer 2025", what: "Microsoft 365 placement at Techlogic" },
