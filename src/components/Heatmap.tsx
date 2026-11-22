@@ -16,8 +16,10 @@ export default function Heatmap({ days, total }: { days: Day[]; total: number })
   const labels = weeks.map((w) => {
     const d = w.find(Boolean);
     if (!d) return "";
-    const m = new Date(d.date + "T00:00:00Z").getUTCMonth();
-    if (m === lastMonth) return "";
+    const date = new Date(d.date + "T00:00:00Z");
+    const m = date.getUTCMonth();
+    // Only label a month in the week its first days fall in, so labels never overlap.
+    if (m === lastMonth || date.getUTCDate() > 7) return "";
     lastMonth = m;
     return MONTHS[m];
   });
