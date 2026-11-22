@@ -27,6 +27,7 @@ export const projects: Project[] = [
       "This site. Next.js and Tailwind on Vercel, with live GitHub data pulled server-side from the GitHub API and refreshed every hour.",
     tags: ["Next.js", "TypeScript", "Tailwind", "Vercel"],
     github: "https://github.com/macroer16/personal-website",
+    live: "https://victor-benson.vercel.app",
     featured: true,
     status: "Live",
   },
@@ -42,9 +43,12 @@ export const projects: Project[] = [
     title: "CS Visualiser",
     years: "2026",
     description:
-      "Interactive revision tools for first-year CS: number bases, logic gates, truth tables, sets and a CPU fetch–decode–execute animation.",
-    tags: ["React", "TypeScript", "Education"],
-    status: "Planned",
+      "Interactive revision site for first-year CS: number bases with full working, drag-and-wire logic gates, a truth-table builder, Venn diagrams, a fetch–decode–execute CPU simulator and a randomised quiz.",
+    tags: ["React", "TypeScript", "Vite", "Tailwind"],
+    github: "https://github.com/macroer16/cs-visualiser",
+    live: "https://cs-visualiser.vercel.app",
+    featured: true,
+    status: "Live",
   },
   {
     title: "aws-guard",
