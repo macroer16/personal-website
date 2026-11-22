@@ -16,7 +16,7 @@ export const projects: Project[] = [
     title: "CS Visualiser",
     year: "2026",
     description:
-      "Revision tools for my first-year modules. You can wire up logic gates and watch the truth table fill itself in, convert between number bases with the working shown, shade Venn diagrams, and step through a tiny CPU one register at a time.",
+      "A six-chapter path from a single switch to a working CPU, built for my first-year modules. Flip bits, wire logic gates, shade Venn diagrams and step through a tiny processor — each chapter ends with a challenge that checks your answer, and progress is saved as you go.",
     stack: "react · typescript · vite · tailwind",
     github: "https://github.com/macroer16/cs-visualiser",
     live: "https://cs-visualiser.vercel.app",
