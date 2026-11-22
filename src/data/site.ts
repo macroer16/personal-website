@@ -22,7 +22,7 @@ export const toolbox = [
   { area: "web", items: "react, next.js, tailwind, vite" },
   { area: "cloud", items: "aws — s3, cloudfront, ec2, iam · vercel · cloudflare" },
   { area: "microsoft", items: "365, entra id, mfa & conditional access, intune, exchange, sharepoint" },
-  { area: "everyday", items: "git, github, dns, claude code" },
+  { area: "everyday", items: "git, github, dns" },
 ];
 
 export const certifications = [
