@@ -53,6 +53,15 @@ export const projects: Project[] = [
     image: "/projects/neon-runner.png",
   },
   {
+    title: "ApplyTrack",
+    year: "2026",
+    description:
+      "A Chrome extension I use to track my own spring week applications: save a role from the page you're on, move it across a kanban board, get notifications 3 days and 1 day before online tests, and prep with a HireVue question checklist. Everything stays in chrome.storage — no account, no server.",
+    stack: "chrome extension (mv3) · react · typescript · vite · tailwind",
+    github: "https://github.com/macroer16/applytrack",
+    image: "/projects/applytrack.png",
+  },
+  {
     title: "Due: deadline tracker",
     year: "2026",
     description:
