@@ -33,13 +33,13 @@ export default function Heatmap({ days, total }: { days: Day[]; total: number })
       <div className="overflow-x-auto">
         <div className="inline-flex flex-col gap-1">
           <div className="flex gap-[3px] font-mono text-[10px] text-faint">
-            {labels.map((l, i) => <span key={i} className="w-[10px] whitespace-nowrap">{l}</span>)}
+            {labels.map((l, i) => <span key={i} className="w-[9px] whitespace-nowrap">{l}</span>)}
           </div>
           <div className="flex gap-[3px]">
             {weeks.map((w, i) => (
               <div key={i} className="flex flex-col gap-[3px]">
                 {w.map((d, j) => (
-                  <span key={j} title={d ? `${d.count} on ${d.date}` : undefined} className="h-[10px] w-[10px] rounded-[1px]"
+                  <span key={j} title={d ? `${d.count} on ${d.date}` : undefined} className="h-[9px] w-[9px] rounded-[1px]"
                     style={{ background: d ? SHADES[d.level] : "transparent" }} />
                 ))}
               </div>
