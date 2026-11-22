@@ -1,17 +1,41 @@
-# Research notes
+# Research: making it look like a person made it
 
-Before redesigning I studied the portfolios from the "your personal website is the new resume" thread and the Build Pack list:
-sanyi.space (main model), prateekjain.dev, pengyuhao.com, maxrohowsky.com, spencerhong.com, plus the others in the pack.
+## 1. What makes a site look AI-generated
 
-## What makes the good ones feel like a real person made them
+Sources: Jenny Ouyang's study of 120 AI-built pages (buildtolaunch.substack.com), "Is your website AI slop?" (dev.to/laurilllll),
+noqode.fr, interfacekit.io, regards.design, vibemole.com, creativemindhabits.com.
 
-1. **A real photo with status pills** (sanyi, prateekjain). A face beats any gradient. → Photo slot + "Open to work" and "AWS Certified" pills.
-2. **Personal voice, lowercase hero** (sanyi: "hi, i'm sanyi"). Short, specific lines instead of corporate copy. → Four plain sentences about what I actually do.
-3. **Live age with decimals inline** under the name (sanyi). → `18.48… years old · cloud & software`.
-4. **Status strip** (prateekjain: STATUS / BASED IN / FOCUS). Recruiters get the key facts in one glance.
-5. **Tech pills with real logos**, grouped by area with a one-line description (sanyi). → simple-icons logos; lucide icons for AWS/Microsoft services that have no public logo.
-6. **Quiet design system**: dotted-grid background, narrow ~850px column, thin borders, one neutral palette, small "— LABEL" eyebrows above each section title. No purple glow blobs.
-7. **Project cards with real screenshots** and white "Website" + outlined "Source" buttons; placeholder art only where no screenshot exists.
-8. **Experience as clean rows** (company + badge + chevron, role underneath, dates right-aligned) that expand for details — not a generic timeline.
-9. **A real contributions heatmap** rendered from data ("N contributions in the last year"), not an embedded image.
-10. **Floating bottom dock** with icon tooltips, a scroll progress bar, back-to-top button and a light/dark toggle (sanyi) — feels like a product, not a template.
+The most common tells, and what this site does instead:
+
+| Tell | Here |
+| --- | --- |
+| Inter / Geist, one font at one weight | Instrument Serif headings, IBM Plex Sans body, IBM Plex Mono details, Caveat for one handwritten note |
+| Purple/blue gradient, glowing blob behind the headline | Warm paper and ink, one accent (London bus red) used in three places |
+| A card / rounded box around every piece of information | No cards. Dashed rules and whitespace separate things |
+| One icon set and nothing else (Lucide), icon on top of feature cards | No icon library at all; plain text links with ↗ |
+| Small uppercase labels with wide letter spacing above every heading | Lowercase serif headings: "about", "work", "projects" |
+| Pill badge above the headline, gradient word in the headline | Neither |
+| Every section fading up on scroll, cards lifting on hover | No scroll animation. One moving thing: the packet in the diagram |
+| Copy that could fit anyone ("passionate about building seamless experiences") | First person, specific: what I fixed, where, when, for whom |
+| Round, unbacked numbers and fake logos/testimonials | Only true facts; nothing invented |
+| Placeholder art where a product image should be | Real screenshot where one exists; otherwise just words |
+
+## 2. Sites I studied
+
+- **krishnagupta.web.app** (one of the most-liked on wonderfulsite.org) — paper background, serif lowercase headings, mono details,
+  local time, dashed column frame, handwritten note. The closest model for this design.
+- **sanyi.space** — live age counter, live GitHub data, "open to work".
+- **brittanychiang.com, leerob.com, paco.me, emilkowal.ski, rauno.me** — text-first, links inside sentences, almost no decoration.
+- **heyamit.dev, pengyuhao.com, prateekjain.dev, gordontu.com** — one personal signature each (ASCII art, field notes, hand drawings).
+- **wonderfulsite.org** — 789 personal sites from @zarazhangrui's threads; the most-liked ones all have something only that person would have.
+
+## 3. The signature detail
+
+Each good site has one thing that only its owner would make. Here it's **fig. 2 — how this page got to you**: a small architecture
+diagram of how the site is actually served (browser → Vercel edge → Next.js → GitHub API), with the real time the data was last
+refreshed. It fits an AWS-certified solutions architect better than any animation would.
+
+## 4. Still to do (needs Victor)
+
+- A real photo (`public/victor.jpg`) — every top site has one.
+- CV PDF (`public/Victor_Benson_CV.pdf`).

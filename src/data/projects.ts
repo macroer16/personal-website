@@ -2,23 +2,22 @@
 
 export type Project = {
   title: string;
-  dates: string;
+  year: string;
   description: string;
-  tags: string[];
+  stack: string;
   github?: string;
   live?: string;
   image?: string; // screenshot in /public/projects
-  label?: string; // shown on the placeholder art when there is no screenshot
   featured?: boolean;
 };
 
 export const projects: Project[] = [
   {
     title: "CS Visualiser",
-    dates: "Nov 2026 – Present",
+    year: "2026",
     description:
-      "Interactive revision for first-year CS: drag-and-wire logic gates, number bases with full working, Venn diagrams and a step-by-step CPU simulator.",
-    tags: ["React", "TypeScript", "Vite", "Tailwind"],
+      "Revision tools for my first-year modules. You can wire up logic gates and watch the truth table fill itself in, convert between number bases with the working shown, shade Venn diagrams, and step through a tiny CPU one register at a time.",
+    stack: "react · typescript · vite · tailwind",
     github: "https://github.com/macroer16/cs-visualiser",
     live: "https://cs-visualiser.vercel.app",
     image: "/projects/cs-visualiser.png",
@@ -26,36 +25,32 @@ export const projects: Project[] = [
   },
   {
     title: "MirrorVerse",
-    dates: "2026 – Present",
+    year: "2026",
     description:
-      "AI hairstyle try-on app: upload a photo and preview new styles on yourself. Grew a 30K+ TikTok following through short demo videos.",
-    tags: ["AI", "Mobile web", "Growth"],
-    label: "AI hairstyle try-on",
+      "An AI hairstyle try-on app: upload a photo and see new styles on yourself before you commit. I grew it a 30K+ following on TikTok by posting short demos and watching what people reacted to.",
+    stack: "ai · mobile web · tiktok",
     featured: true,
   },
   {
     title: "This website",
-    dates: "Nov 2026",
+    year: "2026",
     description:
-      "Next.js on Vercel with live GitHub data, a contributions heatmap built from the API, light/dark mode and full social previews.",
-    tags: ["Next.js", "TypeScript", "Tailwind", "Vercel"],
+      "Next.js on Vercel. The contributions grid and repo list are pulled from GitHub on the server and cached for an hour.",
+    stack: "next.js · typescript · tailwind · vercel",
     github: "https://github.com/macroer16/personal-website",
     live: "https://victor-benson.vercel.app",
-    image: "/projects/personal-website.png",
     featured: true,
   },
   {
     title: "AWS portfolio site",
-    dates: "2025",
-    description: "Static site hosted on Amazon S3 and served globally through CloudFront — my first hands-on AWS deployment.",
-    tags: ["AWS S3", "CloudFront", "HTML", "CSS"],
-    label: "S3 + CloudFront",
+    year: "2025",
+    description: "My first real AWS deployment: a static site in an S3 bucket, served worldwide through CloudFront.",
+    stack: "aws s3 · cloudfront · html · css",
   },
   {
     title: "AI Content Assistant",
-    dates: "2025",
-    description: "Python tool that uses an AI API to draft and organise content.",
-    tags: ["Python", "AI"],
-    label: "Python + AI API",
+    year: "2025",
+    description: "A Python tool that uses an AI API to draft and organise content.",
+    stack: "python · ai api",
   },
 ];

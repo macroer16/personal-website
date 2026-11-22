@@ -1,238 +1,184 @@
-import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, FileText, Mail, Star } from "lucide-react";
-import { siGithub } from "simple-icons";
-import TopBar from "@/components/TopBar";
-import Section from "@/components/Section";
-import Reveal from "@/components/Reveal";
+import Link from "next/link";
+import { Header, Block, Footer } from "@/components/Frame";
 import AgeCounter from "@/components/AgeCounter";
-import ProjectCard from "@/components/ProjectCard";
-import RoleRow from "@/components/RoleRow";
+import Clock from "@/components/Clock";
+import Diagram from "@/components/Diagram";
 import Heatmap from "@/components/Heatmap";
-import Icon, { LinkedInIcon } from "@/components/Icon";
-import { site, stack, certifications, experience, education, achievements } from "@/data/site";
+import ProjectEntry from "@/components/ProjectEntry";
+import { site, toolbox, certifications, work, study, log } from "@/data/site";
 import { projects } from "@/data/projects";
 import { getContributions, getProfile } from "@/lib/github";
+import type { Role } from "@/data/site";
 
-export const revalidate = 3600; // refresh the GitHub data at most once an hour
+export const revalidate = 3600; // refresh GitHub data at most once an hour
 
-const GitHubIcon = ({ className = "h-4 w-4" }) => (
-  <svg viewBox="0 0 24 24" className={className} fill="currentColor" aria-hidden><path d={siGithub.path} /></svg>
-);
-
-function Avatar({ size }: { size: number }) {
-  return site.photo ? (
-    <Image src={site.photo} alt={site.name} width={size} height={size} className="h-full w-full rounded-full object-cover" priority />
-  ) : (
-    // Monogram until a photo is added in src/data/site.ts.
-    <div className="grid h-full w-full place-items-center rounded-full bg-gradient-to-br from-zinc-600 to-zinc-900 font-semibold tracking-tight text-white" style={{ fontSize: size * 0.3 }}>VB</div>
+function RoleEntry({ r }: { r: Role }) {
+  return (
+    <div className="py-5 first:pt-0 last:pb-0">
+      <div className="flex items-baseline justify-between gap-4">
+        <p className="font-medium text-ink">
+          {r.org}
+          {r.now && <span className="ml-2 font-mono text-[11px] font-normal text-red">● now</span>}
+        </p>
+        <p className="shrink-0 text-right font-mono text-xs text-faint">{r.place}<br />{r.dates}</p>
+      </div>
+      <p className="text-sm text-soft">{r.role}</p>
+      {r.summary && <p className="mt-2 text-soft">{r.summary}</p>}
+    </div>
   );
 }
 
 export default async function Home() {
   const [profile, contributions] = await Promise.all([getProfile(site.githubUser), getContributions(site.githubUser)]);
+  const refreshed = new Date().toLocaleTimeString("en-GB", { timeZone: "Europe/London", hour: "2-digit", minute: "2-digit" });
   const featured = projects.filter((p) => p.featured);
 
   return (
-    <div id="top">
-      <TopBar />
-      <main className="mx-auto max-w-[850px] px-5 pb-40">
-        {/* Hero */}
-        <section className="grid items-center gap-8 pt-12 sm:pt-24 md:grid-cols-[1fr_auto] md:gap-10">
-          <Reveal>
-            <h1 className="text-5xl font-bold tracking-tight text-fg sm:text-6xl">hi, i&apos;m {site.first}</h1>
-            <p className="mt-3 text-[15px] font-semibold text-fg">
-              <AgeCounter birthDate={site.birthDate} /> years old · {site.tagline}
+    <>
+      <Header />
+      <main>
+        {/* Intro */}
+        <Block>
+          <div className="flex items-start gap-5">
+            <div className="relative h-[84px] w-[84px] shrink-0 overflow-hidden rounded-[4px] border border-rule bg-tint">
+              {site.photo ? (
+                <Image src={site.photo} alt="Victor Benson" fill sizes="84px" className="object-cover" priority />
+              ) : (
+                <span className="grid h-full w-full place-items-center font-serif text-4xl text-ink">vb</span>
+              )}
+            </div>
+            <div>
+              <h1 className="font-serif text-[52px] leading-[0.95] tracking-[-0.01em] text-ink sm:text-[64px]">victor benson</h1>
+              <p className="mt-2 font-mono text-[13px] text-soft">computer science student &amp; cloud builder</p>
+            </div>
+          </div>
+
+          <dl className="relative mt-8 grid gap-x-8 gap-y-2 font-mono text-[13px] text-soft sm:grid-cols-2">
+            <div className="flex gap-2"><dt className="text-faint">study</dt><dd>bsc cs, university of westminster</dd></div>
+            <div className="flex gap-2"><dt className="text-faint">based</dt><dd>london, uk</dd></div>
+            <div className="flex gap-2"><dt className="text-faint">age</dt><dd><AgeCounter birthDate={site.birthDate} /></dd></div>
+            <div className="flex gap-2"><dt className="text-faint">local</dt><dd><Clock /></dd></div>
+            <span aria-hidden className="pointer-events-none absolute -right-2 top-9 hidden rotate-[-4deg] font-hand text-xl text-red md:block">
+              ↖ my time, not yours
+            </span>
+          </dl>
+
+          <p className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-[15px]">
+            <a className="link text-ink" href={site.github} target="_blank" rel="noreferrer">github ↗</a>
+            <a className="link text-ink" href={site.linkedin} target="_blank" rel="noreferrer">linkedin ↗</a>
+            <a className="link text-ink" href={`mailto:${site.email}`}>email</a>
+            {site.cvReady
+              ? <a className="link text-ink" href={site.cv}>cv (pdf)</a>
+              : <a className="link text-ink" href={`mailto:${site.email}?subject=CV%20request`}>ask for my cv</a>}
+          </p>
+        </Block>
+
+        <Block id="about" title="about">
+          <div className="space-y-4 text-[17px] leading-[1.7] text-soft">
+            <p>
+              I&apos;m Victor, a first-year computer science student at the University of Westminster. I got into tech through IT support —
+              fixing laptops, accounts and network problems for staff and students — and at some point I started wanting to build
+              things instead of just fixing them.
             </p>
-            <div className="mt-6 max-w-[460px] space-y-4 text-[15px] leading-relaxed text-muted">
-              {site.intro.map((line) => <p key={line}>{line}</p>)}
-            </div>
-            <div className="mt-7 flex flex-wrap items-center gap-2">
-              {[
-                { href: site.github, label: "GitHub", icon: <GitHubIcon /> },
-                { href: site.linkedin, label: "LinkedIn", icon: <LinkedInIcon /> },
-                { href: `mailto:${site.email}`, label: "Email", icon: <Mail className="h-4 w-4" /> },
-              ].map((s) => (
-                <a key={s.label} href={s.href} target="_blank" rel="noreferrer" aria-label={s.label}
-                  className="grid h-10 w-10 place-items-center rounded-full border border-line text-muted transition hover:border-faint hover:text-fg">
-                  {s.icon}
-                </a>
-              ))}
-              <a href={site.cvReady ? site.cv : `mailto:${site.email}?subject=CV%20request`}
-                className="ml-1 inline-flex h-10 items-center gap-2 rounded-full bg-fg px-4 text-sm font-medium text-bg transition hover:opacity-85">
-                <FileText className="h-4 w-4" /> {site.cvReady ? "Download CV" : "Request CV"}
-              </a>
-            </div>
-          </Reveal>
+            <p>
+              In summer 2025 I set up Microsoft 365 for four departments at <span className="text-ink">Techlogic IT Services</span>, and before
+              starting uni I passed the <span className="text-ink">AWS Solutions Architect – Associate</span> exam. Since then I&apos;ve been
+              shipping my own projects: <a href="#projects" className="link text-ink">MirrorVerse</a>, an AI hairstyle try-on app with a 30K+
+              TikTok following, and <a href="https://cs-visualiser.vercel.app" className="link text-ink">CS Visualiser</a>, revision tools I
+              built for my own modules.
+            </p>
+            <p>Away from the laptop I play basketball for the Westminster Dragons.</p>
+            <p className="text-ink">
+              Right now I&apos;m looking for <span className="bg-tint px-1">spring weeks and summer internships</span> in software engineering
+              and cloud. If that&apos;s you, <a href="#contact" className="link">say hello</a>.
+            </p>
+          </div>
+        </Block>
 
-          <Reveal className="order-first flex items-center gap-4 md:order-none md:flex-col md:gap-3">
-            <div className="h-24 w-24 shrink-0 rounded-full border border-line p-1 md:h-44 md:w-44 md:p-1.5">
-              <Avatar size={176} />
-            </div>
-            <div className="flex flex-col items-start gap-2 md:items-center">
-              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400">
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-                </span>
-                Open to work
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-[#ff9900]/30 bg-[#ff9900]/10 px-3 py-1 text-xs font-medium text-[#ffb347]">
-                AWS Certified · SAA
-              </span>
-            </div>
-          </Reveal>
-        </section>
+        <Block id="projects" title="projects">
+          <div className="divide-y divide-dashed divide-rule">
+            {featured.map((p, i) => <ProjectEntry key={p.title} p={p} fig={i + 1} />)}
+          </div>
+          <Link href="/projects" className="link mt-8 inline-block font-mono text-xs text-ink">everything i&apos;ve built →</Link>
+        </Block>
 
-        {/* Status strip */}
-        <Reveal className="mt-12 grid gap-3 sm:grid-cols-3">
-          {site.status.map((s) => (
-            <div key={s.label} className="rounded-xl border border-line bg-card/60 px-4 py-3">
-              <p className="text-[10px] font-medium uppercase tracking-[0.2em] text-faint">{s.label}</p>
-              <p className="mt-1 text-sm text-fg">{s.value}</p>
-            </div>
-          ))}
-        </Reveal>
+        <Block id="work" title="work">
+          <div className="divide-y divide-dashed divide-rule">
+            {work.map((r) => <RoleEntry key={r.org} r={r} />)}
+          </div>
+          <h3 className="mb-4 mt-12 font-serif text-[28px] leading-none text-ink">study</h3>
+          <div className="divide-y divide-dashed divide-rule">
+            {study.map((r) => <RoleEntry key={r.org} r={r} />)}
+          </div>
+        </Block>
 
-        <Section id="stack" eyebrow="Stack" title="What I Work With">
-          <div className="grid gap-3 md:grid-cols-2">
-            {stack.map((g) => (
-              <div key={g.area} className="rounded-xl border border-line bg-card/60 p-4">
-                <h3 className="font-semibold text-fg">{g.area}</h3>
-                <p className="mt-0.5 text-sm text-muted">{g.detail}</p>
-                <ul className="mt-4 flex flex-wrap gap-2">
-                  {g.items.map((i) => (
-                    <li key={i.name} className="inline-flex items-center gap-1.5 rounded-md border border-line bg-pill px-2.5 py-1.5 text-[13px] font-medium text-fg">
-                      <Icon name={i.icon} /> {i.name}
-                    </li>
-                  ))}
-                </ul>
+        <Block id="toolbox" title="toolbox">
+          <dl className="space-y-2.5">
+            {toolbox.map((t) => (
+              <div key={t.area} className="grid gap-1 sm:grid-cols-[110px_1fr]">
+                <dt className="font-mono text-xs leading-6 text-faint">{t.area}</dt>
+                <dd className="text-soft">{t.items}</dd>
               </div>
             ))}
-          </div>
-        </Section>
-
-        <Section id="certifications" eyebrow="Credentials" title="Certifications">
-          <div className="grid gap-3 md:grid-cols-2">
+          </dl>
+          <div className="mt-8 space-y-2">
             {certifications.map((c) => (
-              <div key={c.code} className="flex gap-4 rounded-xl border border-line bg-card/60 p-4">
-                <div className="grid h-14 w-14 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-[#232f3e] to-[#131a22] ring-1 ring-[#ff9900]/30">
-                  <span className="text-[11px] font-bold tracking-wide text-[#ff9900]">AWS</span>
-                </div>
-                <div>
-                  <p className="text-xs text-faint">AWS Certified · {c.code}</p>
-                  <h3 className="font-semibold text-fg">{c.name}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-muted">{c.detail}</p>
-                </div>
-              </div>
+              <p key={c.code} className="flex items-baseline justify-between gap-4 border-b border-dashed border-rule pb-2 text-ink">
+                <span>{c.name}</span>
+                <span className="font-mono text-xs text-faint">{c.code}</span>
+              </p>
             ))}
           </div>
-        </Section>
+          <div className="mt-10">
+            <Diagram refreshed={refreshed} />
+          </div>
+        </Block>
 
-        <Section id="projects" eyebrow="Builds" title="Featured Projects">
-          <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
-            {featured.map((p) => <ProjectCard key={p.title} project={p} />)}
-          </div>
-          <Link href="/projects" className="mt-6 inline-flex items-center gap-2 rounded-lg border border-line px-4 py-2 text-sm font-medium uppercase tracking-wider text-fg transition hover:bg-pill">
-            View all projects <ArrowRight className="h-4 w-4" />
-          </Link>
-        </Section>
-
-        <Section id="experience" eyebrow="Experience" title="Work">
-          <div className="divide-y divide-line">
-            {experience.map((r) => <RoleRow key={r.org} r={r} />)}
-          </div>
-          <h3 className="mt-10 text-lg font-semibold text-fg">Education</h3>
-          <div className="mt-2 divide-y divide-line">
-            {education.map((r) => <RoleRow key={r.org} r={r} />)}
-          </div>
-        </Section>
-
-        <Section id="achievements" eyebrow="Milestones" title="Achievements" intro="Things I'm proud of so far — with plenty more to come.">
-          <div className="grid gap-3 md:grid-cols-2">
-            {achievements.map((a) => (
-              <div key={a.title} className="rounded-xl border border-line bg-card/60 p-4">
-                <h3 className="font-semibold text-fg">{a.title}</h3>
-                <p className="text-sm text-muted">{a.where}</p>
-                <p className="mt-2 text-sm leading-relaxed text-muted">{a.detail}</p>
-              </div>
-            ))}
-          </div>
-        </Section>
-
-        <Section id="github" eyebrow="Open source" title="GitHub Contributions">
-          <div className="rounded-xl border border-line bg-card/60 p-5">
-            {contributions ? (
-              <Heatmap days={contributions.days} total={contributions.total} />
-            ) : (
-              // Fallback image if the contributions API is down.
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={`https://ghchart.rshah.org/40c463/${site.githubUser}`} alt="GitHub contributions" className="w-full" loading="lazy" />
-            )}
-          </div>
-          {profile && (
-            <div className="mt-3 grid gap-3 sm:grid-cols-2">
-              {profile.latest.map((r) => (
-                <a key={r.name} href={r.html_url} target="_blank" rel="noreferrer" className="rounded-xl border border-line bg-card/60 p-4 transition hover:border-faint/50">
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-sm text-fg">{r.name}</span>
-                    <span className="flex items-center gap-1 text-xs text-faint"><Star className="h-3 w-3" />{r.stargazers_count}</span>
-                  </div>
-                  {r.description && <p className="mt-1 line-clamp-1 text-sm text-muted">{r.description}</p>}
-                  {r.language && <p className="mt-2 text-xs text-faint">{r.language}</p>}
-                </a>
-              ))}
+        <Block id="github" title="on github">
+          {contributions ? (
+            <Heatmap days={contributions.days} total={contributions.total} />
+          ) : (
+            <p className="text-soft">The contributions grid couldn&apos;t load just now — <a className="link text-ink" href={site.github}>see it on GitHub</a>.</p>
+          )}
+          {profile && profile.latest.length > 0 && (
+            <div className="mt-8">
+              <p className="mb-2 font-mono text-xs text-faint">recently pushed</p>
+              <ul className="divide-y divide-dashed divide-rule">
+                {profile.latest.map((r) => (
+                  <li key={r.name}>
+                    <a href={r.html_url} target="_blank" rel="noreferrer" className="group flex items-baseline justify-between gap-4 py-2.5">
+                      <span className="font-mono text-sm text-ink group-hover:underline">{r.name}</span>
+                      <span className="truncate text-right text-sm text-faint">{r.language ?? ""}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
-          <a href={site.github} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-2 text-sm text-muted hover:text-fg">
-            <GitHubIcon /> {profile ? `${profile.repos} public repos` : "All repos"} on GitHub <ArrowRight className="h-4 w-4" />
+        </Block>
+
+        <Block id="log" title="log">
+          <ul className="space-y-2">
+            {log.map((l) => (
+              <li key={l.what} className="grid grid-cols-[100px_1fr] gap-3">
+                <span className="font-mono text-xs leading-6 text-faint">{l.when}</span>
+                <span className="text-soft">{l.what}</span>
+              </li>
+            ))}
+          </ul>
+        </Block>
+
+        <Block id="contact" title="say hello">
+          <p className="max-w-[520px] text-[17px] text-soft">
+            Recruiters, course mates, people building cool things — my inbox is open. Email is the quickest way to reach me.
+          </p>
+          <a href={`mailto:${site.email}`} className="link mt-5 inline-block font-serif text-[30px] italic text-ink sm:text-[36px]">
+            {site.email.toLowerCase()}
           </a>
-        </Section>
-
-        {/* Contact */}
-        <section id="contact" className="scroll-mt-20 pt-24">
-          <Reveal className="rounded-2xl border border-line bg-card/60 px-6 py-14 text-center">
-            <p className="flex items-center justify-center gap-2 text-[11px] font-medium uppercase tracking-[0.22em] text-faint">
-              <span className="h-px w-5 bg-faint/60" />Contact<span className="h-px w-5 bg-faint/60" />
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-fg">Get in touch</h2>
-            <p className="mx-auto mt-3 max-w-md text-xl text-muted">Want to work with me?</p>
-            <a href={`mailto:${site.email}`} className="mt-7 inline-flex items-center gap-2.5 rounded-full border border-line bg-bg py-1.5 pl-1.5 pr-5 text-sm font-semibold text-fg transition hover:border-faint">
-              <span className="h-7 w-7 overflow-hidden rounded-full"><Avatar size={28} /></span>
-              Say hello
-            </a>
-            <p className="mt-4 text-sm text-faint">{site.email}</p>
-          </Reveal>
-        </section>
+        </Block>
       </main>
-
-      <footer className="border-t border-line">
-        <div className="mx-auto grid max-w-[850px] gap-8 px-5 pb-32 pt-10 text-sm sm:grid-cols-3">
-          <div>
-            <p className="font-semibold text-fg">Victor</p>
-            <p className="mt-2 text-muted">CS student & AWS-certified builder</p>
-            <p className="text-muted">University of Westminster, London</p>
-          </div>
-          <div>
-            <p className="text-xs font-medium uppercase tracking-[0.2em] text-faint">Links</p>
-            <ul className="mt-3 space-y-1.5 text-muted">
-              <li><Link href="/projects" className="hover:text-fg">Projects</Link></li>
-              <li><a href="#experience" className="hover:text-fg">Experience</a></li>
-              <li><a href="#achievements" className="hover:text-fg">Achievements</a></li>
-              <li><a href="#github" className="hover:text-fg">Activity</a></li>
-            </ul>
-          </div>
-          <div>
-            <p className="text-xs font-medium uppercase tracking-[0.2em] text-faint">Social</p>
-            <ul className="mt-3 space-y-1.5 text-muted">
-              <li><a href={site.github} target="_blank" rel="noreferrer" className="hover:text-fg">GitHub</a></li>
-              <li><a href={site.linkedin} target="_blank" rel="noreferrer" className="hover:text-fg">LinkedIn</a></li>
-              <li><a href={`mailto:${site.email}`} className="hover:text-fg">Email</a></li>
-            </ul>
-          </div>
-          <p className="text-faint sm:col-span-3">© {new Date().getFullYear()} Victor Benson. Built with Next.js.</p>
-        </div>
-      </footer>
-    </div>
+      <Footer refreshed={refreshed} />
+    </>
   );
 }

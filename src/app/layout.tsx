@@ -1,15 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
-import Cursor from "@/components/Cursor";
-import Dock from "@/components/Dock";
+import "@fontsource/instrument-serif/400.css";
+import "@fontsource/instrument-serif/400-italic.css";
+import "@fontsource/ibm-plex-sans/400.css";
+import "@fontsource/ibm-plex-sans/500.css";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/caveat/500.css";
 import { site } from "@/data/site";
 import "./globals.css";
 
 const description =
-  "Victor Benson — Computer Science student at the University of Westminster and AWS Certified Solutions Architect. Projects, experience and contact.";
+  "Victor Benson — Computer Science student at the University of Westminster and AWS Certified Solutions Architect, based in London.";
 
-// Full SEO and social-preview metadata (Open Graph + Twitter card).
+// SEO and social previews (Open Graph + Twitter card).
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: { default: `${site.name} — ${site.role}`, template: `%s · ${site.name}` },
@@ -21,22 +23,18 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export const viewport: Viewport = { themeColor: "#0a0a0a" };
+export const viewport: Viewport = { themeColor: "#f5f2ea" };
 
-// Applies the saved theme before the page paints, so there's no flash of the wrong colours.
-const themeScript = `try{if(localStorage.getItem("theme")==="light")document.documentElement.classList.add("light")}catch(e){}`;
+// Apply the saved theme before the first paint so the colours never flash.
+const themeScript = `try{if(localStorage.getItem("theme")==="dark")document.documentElement.classList.add("dark")}catch(e){}`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-GB" className="scroll-smooth" suppressHydrationWarning>
+    <html lang="en-GB" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className={`${GeistSans.variable} ${GeistMono.variable} antialiased`}>
-        <Cursor />
-        {children}
-        <Dock />
-      </body>
+      <body className="relative">{children}</body>
     </html>
   );
 }
