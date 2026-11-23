@@ -64,6 +64,15 @@ export const projects: Project[] = [
     image: "/projects/neon-runner.png",
   },
   {
+    title: "Dots & Boxes",
+    year: "2026",
+    description:
+      "The pencil-and-paper game against an AI with three levels. Hard searches the rest of the game with negamax, alpha-beta pruning and a transposition table, in a Web Worker so the page never freezes, and finds expert tricks like double-dealing by itself. It beat the Medium level 20–0 on 3×3 and 11–0 on 4×4. Switching to make/unmake instead of copying the board made the search 5× faster. Chalkboard SVG look, keyboard play, hints and undo.",
+    stack: "typescript · minimax / alpha-beta · web workers · svg · vite · vitest",
+    github: "https://github.com/macroer16/dots-and-boxes",
+    image: "/projects/dots-and-boxes.png",
+  },
+  {
     title: "Secret Masker",
     year: "2026",
     description:
