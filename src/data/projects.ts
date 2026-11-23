@@ -64,6 +64,15 @@ export const projects: Project[] = [
     image: "/projects/neon-runner.png",
   },
   {
+    title: "Secret Masker",
+    year: "2026",
+    description:
+      "A Chrome extension that catches API keys, passwords, card numbers and UK National Insurance numbers when you paste into ChatGPT, Claude or Gemini, and swaps them for placeholders like [AWS_ACCESS_KEY_1] before the site sees them. When you copy the reply back, your real values return. Card numbers are Luhn-checked, IBANs checksum-verified and NI numbers checked against HMRC prefix rules, so false alarms stay rare. It runs entirely on your device.",
+    stack: "chrome extension (mv3) · typescript · esbuild · vitest · playwright",
+    github: "https://github.com/macroer16/secret-masker",
+    image: "/projects/secret-masker.png",
+  },
+  {
     title: "ApplyTrack",
     year: "2026",
     description:
